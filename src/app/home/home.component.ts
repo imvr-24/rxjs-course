@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Course } from "../model/course";
-import { interval, Observable, of, timer, noop } from 'rxjs';
-import { catchError, delayWhen, map, retryWhen, shareReplay, tap, filter } from 'rxjs/operators';
+import { interval, Observable, of, timer, noop, ObservableInput, concat } from 'rxjs';
+import { catchError, delayWhen, map, retryWhen, shareReplay, tap, filter, concatAll } from 'rxjs/operators';
 import { createHTTPObservable } from '../common/util';
 
 
@@ -27,7 +27,7 @@ export class HomeComponent implements OnInit {
     ngOnInit() {
         // defination of http stream.
         const http$: Observable<Course[]> = createHTTPObservable('/api/courses');
-        const courses$ =  http$
+        const courses$: Observable<any[]> = http$
             .pipe(
                 tap(() => console.log(`http request 1`)),
                 map(res => {
@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit {
                 shareReplay()
             );
 
-        courses$.subscribe( a => console.log(a) ); // 3 http requests
+        courses$.subscribe(a => console.log(a)); // 3 http requests
 
         this.beginnersCourses$ = courses$.pipe(
             map(
@@ -54,6 +54,7 @@ export class HomeComponent implements OnInit {
         );
 
         // creation of http stream.
+
         // courses$.subscribe(
         //     courses => {
         //         this.beginnersCourses = courses.filter( course => course.category === 'BEGINNER');
@@ -64,6 +65,29 @@ export class HomeComponent implements OnInit {
         //     () => { console.log('Completed..') }
         // );
 
+
+        // Observable Concatenation. concatMap() operator.
+
+        // defining Observable using of()
+        const source1$ = interval(1000);
+        const source2$ = of(4, 5, 6);
+        const source3$ = of(7, 8, 9, 10);
+
+        // sequential operation.
+
+        const result$ = concat(source1$, source2$, source3$);
+        // result$.subscribe(console.log);
+        result$.subscribe(v => console.log(v));
+        
+        // concat(
+        //     of(1, 2, 3),
+        //     // subscribed after first completes
+        //     of(4, 5, 6),
+        //     // subscribed after second completes
+        //     of(7, 8, 9)
+        // )
+        //     // log: 1, 2, 3, 4, 5, 6, 7, 8, 9
+        //     .subscribe(console.log);
     }
 
 }
