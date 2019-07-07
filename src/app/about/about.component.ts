@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewEncapsulation, OnDestroy } from '@angular/core';
 import { interval, timer, fromEvent, Observable, noop } from 'rxjs';
-import { response } from 'express';
+import { createHTTPObservable } from "../common/util";
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'about',
@@ -20,30 +21,7 @@ export class AboutComponent implements OnInit, OnDestroy {
 
     // 1. create custom http Observable.
 
-    // defination of http stream.
-    const http$ = Observable.create(observer => {
-      fetch('/api/courses')
-            .then(res => {
-              return res.json();
-            })
-            .then(body => {
-              observer.next(body);
 
-              observer.complete();
-
-            })
-            .catch(err => {
-              observer.error(err);
-            });
-    });
-
-    // creation of http stream.
-    http$.subscribe(
-      courses => console.log(courses),
-      noop,
-      // (err) => {},
-      () => { console.log('Completed..') }
-    );
 
     // rxjs - reactive extensions for javascript.
 
@@ -88,3 +66,4 @@ export class AboutComponent implements OnInit, OnDestroy {
 
   }
 }
+
