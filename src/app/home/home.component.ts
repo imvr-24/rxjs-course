@@ -27,15 +27,19 @@ export class HomeComponent implements OnInit {
     ngOnInit() {
         // defination of http stream.
         const http$: Observable<Course[]> = createHTTPObservable('/api/courses');
-        const courses$: Observable<Course[]> = http$
+        const courses$ =  http$
             .pipe(
+                tap(() => console.log(`http request 1`)),
                 map(res => {
                     console.log(res);
                     console.log(Object.values(res));
                     console.log(Object.values(res['payload']));
                     return Object.values((res['payload']));
-                })
+                }),
+                shareReplay()
             );
+
+        courses$.subscribe( a => console.log(a) ); // 3 http requests
 
         this.beginnersCourses$ = courses$.pipe(
             map(
