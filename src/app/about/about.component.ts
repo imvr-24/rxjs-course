@@ -17,7 +17,7 @@ export class AboutComponent implements OnInit, OnDestroy {
     // promise vs observable
 
     // promise -- will be immediately executed.
-    // observable -- I will only trigger the request once any subsciption happens.
+    // observable -- It will only trigger the request once any subsciption happens.
 
     // 1. create custom http Observable.
 
@@ -30,21 +30,24 @@ export class AboutComponent implements OnInit, OnDestroy {
     // What is an rxjs observable.
 
     // const interval$ = interval(1000); // defination of stream of values.
-    // const interval$ = timer(1000, 1000); // defination of stream of values.
+    const interval$ = timer(3000, 1000); // defination of stream of values.
 
-    // interval$.subscribe(val => console.log('stream 1 => ' + val)); // Creation of stream of values.
-    // const sub = interval$.subscribe(val => console.log('stream 2 => ' + val)); // Creaton of stream of values.
+    const first = interval$.subscribe(val => console.log('stream 1 => ' + val)); // Creation of stream of values.
+    const sub = interval$.subscribe(val => console.log('stream 2 => ' + val)); // Creaton of stream of values.
 
-    // setTimeout(() => {
-    //   sub.unsubscribe();
-    // }, 5000);
+    setTimeout(() => {
+      sub.unsubscribe();
+    }, 5000);
+    setTimeout(() => {
+      first.unsubscribe();
+    }, 7000);
 
-    // const click$ = fromEvent(document, 'click'); // defination of stream.
-    // click$.subscribe(
-      // event => console.log(event),
-      // err => console.log(err),
-      // () => console.log('Stream is completed!!')
-    // ); // stream of values.
+    const click$ = fromEvent(document, 'click'); // defination of stream.
+    click$.subscribe(
+      event => console.log(event),
+      err => console.log(err),
+      () => console.log('Stream is completed!!')
+    ); // stream of values.
 
     // complex way of combining streams.
 

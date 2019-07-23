@@ -2,7 +2,8 @@ import { Observable } from "rxjs";
 
 export function createHTTPObservable(url) {
     return Observable.create(observer => {
-        fetch('/api/courses')
+        // fetch('/api/courses')
+        fetch(url)
             .then(res => {
                 return res.json();
             })
